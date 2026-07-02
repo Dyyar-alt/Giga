@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:Giga.Views"
+       x:Class="Giga.AppShell">
+
+    <Shell.FlyoutHeader>
+        <StackLayout BackgroundColor="#3465A4" Padding="20">
+            <Label Text="Клиент Гигачат" 
+                   TextColor="White" 
+                   FontSize="Large" 
+                   HorizontalOptions="Center"/>
+        </StackLayout>
+    </Shell.FlyoutHeader>
+
+    <Shell.FlyoutFooter>
+        <StackLayout Padding="20" Spacing="10" BackgroundColor="#f5f5f5">
+            <Button Text="🗑️ Очистить ключ"
+                    Command="{Binding ClearKeyCommand}"
+                    BackgroundColor="#FF9800"
+                    TextColor="White"
+                    CornerRadius="10"
+                    FontAttributes="Bold"
+                    HeightRequest="50" />
+            <Button Text="🚪 Выход"
+                    Command="{Binding ExitCommand}"
+                    BackgroundColor="#d32f2f"
+                    TextColor="White"
+                    CornerRadius="10"
+                    FontAttributes="Bold"
+                    HeightRequest="50" />
+        </StackLayout>
+    </Shell.FlyoutFooter>
+
+    <ShellContent Route="ChatPage" ContentTemplate="{DataTemplate local:ChatPageNew}" Title="Чат" Icon="chat_icon.png"/>
+    <ShellContent Route="ImageGenerationPage" ContentTemplate="{DataTemplate local:ImageGenPage}" Title="Генератор" Icon="image_icon.png"/>
+
+    <TabBar>
+        <Tab Title="Чат" Icon="chat_icon.png">
+            <ShellContent Route="ChatPageNew"/>
+        </Tab>
+        <Tab Title="Изображения" Icon="image_icon.png">
+            <ShellContent Route="ImageGenPage"/>
+        </Tab>
+    </TabBar>
+</Shell>

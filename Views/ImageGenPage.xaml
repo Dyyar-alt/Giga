@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Giga.Views.ImageGenPage"
+             Title="Генератор изображений">
+
+    <Grid RowDefinitions="*, Auto" Padding="10" RowSpacing="10">
+        <!-- Основной контент со скроллом -->
+        <ScrollView Grid.Row="0">
+            <StackLayout Spacing="15">
+
+                <!-- Ввод промпта -->
+                <Entry Placeholder="Введите описание..."
+                       Text="{Binding Prompt, Mode=TwoWay}" />
+
+                <!-- Настройки -->
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <Picker Title="Стиль"
+                            ItemsSource="{Binding StylesList}"
+                            SelectedItem="{Binding SelectedStyle}" />
+                    <Picker Title="Разрешение"
+                            Grid.Column="1"
+                            ItemsSource="{Binding ResolutionsList}"
+                            SelectedItem="{Binding SelectedResolution}" />
+                </Grid>
+
+                <!-- Кнопка генерации -->
+                <Button Text="Сгенерировать"
+                        Command="{Binding GenerateCommand}"
+                        IsEnabled="{Binding IsNotGenerating}"
+                        BackgroundColor="#3465A4"
+                        TextColor="White" />
+
+                <!-- Статусное сообщение -->
+                <Label Text="{Binding StatusMessage}" 
+                       FontSize="Small" 
+                       HorizontalOptions="Center" />
+
+                <!-- Анимированный GIF поверх всего -->
+                <Grid HorizontalOptions="Center" 
+                      VerticalOptions="Center"
+                      BackgroundColor="White"
+                      Padding="10">
+                    <Image Source="brain.gif"
+                           HeightRequest="64"
+                           WidthRequest="64"
+                           Aspect="AspectFit"
+                           IsVisible="{Binding IsGenerating}" />
+                </Grid>
+
+                <!-- ActivityIndicator -->
+                <ActivityIndicator IsVisible="{Binding IsGenerating}" 
+                                   IsRunning="{Binding IsGenerating}" />
+
+                <!-- Превью изображения -->
+                <Frame x:Name="PreviewFrame"
+                       HeightRequest="350"
+                       BackgroundColor="LightGray"
+                       HasShadow="False"
+                       IsVisible="{Binding HasImage}">
+                    <Image x:Name="PreviewImage"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Frame>
+
+                <!-- История -->
+                <Label Text="История" FontSize="16" FontAttributes="Bold" Margin="0,10,0,0" />
+                <CollectionView x:Name="HistoryCollectionView"
+                                HeightRequest="100"
+                                SelectionMode="Single">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding Prompt}" 
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1" />
+                                <Label Grid.Column="1" 
+                                       Text="{Binding Timestamp, StringFormat='{0:HH:mm}'}"
+                                       FontSize="Small"
+                                       TextColor="Gray" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Кнопка очистки истории -->
+                <Button Text="🧹 Очистить историю"
+                        Command="{Binding ClearHistoryCommand}"
+                        BackgroundColor="Gray"
+                        TextColor="White" />
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Кнопки сохранения - зафиксированы внизу -->
+        <Grid Grid.Row="1" 
+              x:Name="SaveButtonsGrid" 
+              ColumnDefinitions="*,*,*" 
+              ColumnSpacing="10"
+              IsVisible="{Binding HasImage}"
+              BackgroundColor="White"
+              Padding="0,5">
+            <Button Grid.Column="0"
+                    Text="PNG"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    HeightRequest="44" />
+            <Button Grid.Column="1"
+                    Text="JPG"
+                    BackgroundColor="#FF9800"
+                    TextColor="White"
+                    HeightRequest="44" />
+            <Button Grid.Column="2"
+                    Text="GIF"
+                    BackgroundColor="#9C27B0"
+                    TextColor="White"
+                    HeightRequest="44" />
+        </Grid>
+    </Grid>
+</ContentPage>

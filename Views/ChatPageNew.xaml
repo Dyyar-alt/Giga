@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Giga.ViewModels"
+             xmlns:conv="clr-namespace:Giga.Converters"
+             x:Class="Giga.Views.ChatPageNew"
+             Title="Чат"
+             Padding="0">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:SenderToColorConverter x:Key="SenderToColorConverter" />
+
+            <!-- Стиль для мобильных устройств -->
+            <Style TargetType="Grid" x:Key="MobileGrid">
+                <Setter Property="ColumnDefinitions" Value="*, Auto" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Заголовок с диалогами -->
+            <RowDefinition Height="*" />
+            <!-- Сообщения -->
+            <RowDefinition Height="Auto" />
+            <!-- Поле ввода -->
+        </Grid.RowDefinitions>
+
+        <!-- Верхняя панель с диалогами -->
+        <Grid Grid.Row="0" BackgroundColor="#3465A4" Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" 
+                   Text="💬 Диалоги" 
+                   TextColor="White" 
+                   FontSize="18" 
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+
+            <Button Grid.Column="1"
+                    Text="💾 Сохранить"
+                    Command="{Binding SaveSessionCommand}"
+                    BackgroundColor="White"
+                    TextColor="#3465A4"
+                    CornerRadius="10"
+                    Padding="15,8" />
+        </Grid>
+
+        <!-- Область сообщений -->
+        <ScrollView x:Name="MessagesScrollView" 
+                    Grid.Row="1"
+                    VerticalScrollBarVisibility="Always" 
+                    Padding="10"
+                    BackgroundColor="White">
+            <StackLayout Spacing="5">
+                <CollectionView x:Name="MessagesCollectionView"
+                                ItemsSource="{Binding CurrentSessionMessages}"
+                                ItemsLayout="VerticalList">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5,2" Margin="0,1">
+                                <Grid.Triggers>
+                                    <DataTrigger TargetType="Grid" Binding="{Binding Sender}" Value="User">
+                                        <Setter Property="HorizontalOptions" Value="End" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Grid" Binding="{Binding Sender}" Value="Bot">
+                                        <Setter Property="HorizontalOptions" Value="Start" />
+                                    </DataTrigger>
+                                </Grid.Triggers>
+                                <Frame Padding="10" CornerRadius="12"
+                                       BackgroundColor="{Binding Sender, Converter={StaticResource SenderToColorConverter}}"
+                                       MaximumWidthRequest="300">
+                                    <Label Text="{Binding Text}" 
+                                           TextColor="White" 
+                                           LineBreakMode="WordWrap" 
+                                           FontSize="16" />
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <!-- Статус -->
+                <Label Text="{Binding StatusMessage}" 
+                       FontSize="Small" 
+                       TextColor="Gray" 
+                       Margin="0,5,0,0"
+                       HorizontalOptions="Center" />
+
+                <!-- Дополнительное пространство для прокрутки -->
+                <BoxView HeightRequest="5" />
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Нижняя панель с полем ввода -->
+        <Grid Grid.Row="2" 
+              Padding="10,5" 
+              ColumnDefinitions="*, Auto" 
+              BackgroundColor="#f0f0f0">
+
+            <Entry Grid.Column="0"
+                   x:Name="MessageEntry"
+                   Placeholder="Введите сообщение..."
+                   Text="{Binding UserPrompt, Mode=TwoWay}"
+                   Completed="OnEntryCompleted"
+                   ReturnType="Send"
+                   HeightRequest="50"
+                   VerticalTextAlignment="Center"
+                   Margin="0,0,10,0"
+                   FontSize="16"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   PlaceholderColor="Gray" />
+
+            <Button Grid.Column="1"
+                    Text="➤"
+                    Command="{Binding SendCommand}"
+                    FontSize="24"
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    BackgroundColor="#3465A4"
+                    TextColor="White"
+                    Padding="0" />
+        </Grid>
+    </Grid>
+</ContentPage>
