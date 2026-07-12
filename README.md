@@ -122,6 +122,7 @@ xml
   <AndroidSigningKeyPass>your_password</AndroidSigningKeyPass>
   <AndroidSigningStorePass>your_password</AndroidSigningStorePass>
 </PropertyGroup>
+
 ⚠️ Никогда не загружайте .keystore и .pfx в публичный репозиторий! Добавьте их в .gitignore.
 
 📁 Giga/
@@ -141,3 +142,32 @@ xml
 ├── 📄 Giga.csproj          # Файл проекта
 ├── 📄 MauiProgram.cs       # Настройка DI и сервисов
 └── 📄 README.md
+
+🛠️ Используемые технологии
+Компонент	          Технология
+Фреймворк	          .NET MAUI 10.0
+Язык	              C# 12
+Архитектура	        MVVM
+MVVM-библиотека	    CommunityToolkit.Mvvm 8.4.2
+SDK	                Неофициальная сборка GigaChatSDK
+Хранение	          Preferences, JSON
+UI	                XAML
+
+🤝 Участие в разработке
+
+Форкните репозиторий
+Создайте ветку для фичи: git checkout -b feature/amazing-feature
+Сделайте коммит: git commit -m 'Add amazing feature'
+Запушьте: git push origin feature/amazing-feature
+Откройте Pull Request
+
+📝 Лицензия
+Проект распространяется под лицензией MIT. Подробности в файле LICENSE.
+
+🙏 Благодарности
+GigaChat за предоставленный API
+.NET MAUI за кроссплатформенный фреймворк
+Всем друзьям-айтишникам за идеи и тестирование! 😊
+
+Разработано с ❤️ для друзей-айтишников 🚀
+
