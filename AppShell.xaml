@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:Giga.Views"
+       x:Class="Giga.AppShell"
+       FlyoutBehavior="Flyout">
+
+    <!-- Шапка меню -->
+    <Shell.FlyoutHeader>
+        <StackLayout BackgroundColor="#3465A4" Padding="20" Spacing="5">
+            <Label Text="Клиент Гигачат" 
+                   TextColor="White" 
+                   FontSize="22" 
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"/>
+            <Label Text="GigaChat Client" 
+                   TextColor="White" 
+                   FontSize="14" 
+                   Opacity="0.8"
+                   HorizontalOptions="Center"/>
+        </StackLayout>
+    </Shell.FlyoutHeader>
+
+    <!-- НИЖНЯЯ ЧАСТЬ МЕНЮ (кнопки) -->
+    <Shell.FlyoutFooter>
+        <StackLayout Padding="15" Spacing="10" BackgroundColor="#f5f5f5">
+            <Button Text="🗑️ Очистить ключ"
+                    Command="{Binding ClearKeyCommand}"
+                    BackgroundColor="#FF9800"
+                    TextColor="White"
+                    CornerRadius="10"
+                    FontAttributes="Bold"
+                    HeightRequest="48" />
+            <Button Text="🚪 Выход"
+                    Command="{Binding ExitCommand}"
+                    BackgroundColor="#d32f2f"
+                    TextColor="White"
+                    CornerRadius="10"
+                    FontAttributes="Bold"
+                    HeightRequest="48" />
+        </StackLayout>
+    </Shell.FlyoutFooter>
+
+    <!-- ПУНКТЫ МЕНЮ (без TabBar) -->
+    <FlyoutItem Title="Чат" Icon="chat_icon.png">
+        <ShellContent Route="ChatPageNew" ContentTemplate="{DataTemplate local:ChatPageNew}"/>
+    </FlyoutItem>
+
+    <FlyoutItem Title="Генератор" Icon="image_icon.png">
+        <ShellContent Route="ImageGenPage" ContentTemplate="{DataTemplate local:ImageGenPage}"/>
+    </FlyoutItem>
+
+</Shell>

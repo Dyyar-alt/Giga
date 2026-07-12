@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- ФОН -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#3465A4" />
+        </shape>
+    </item>
+
+    <!-- ЛОГОТИП В ЦЕНТРЕ -->
+    <item
+        android:width="256dp"
+        android:height="256dp"
+        android:gravity="center"
+        android:top="40dp">
+        <bitmap
+            android:src="@drawable/splash_logo"
+            android:gravity="center"
+            android:antialias="true" />
+    </item>
+
+    <!-- ТЕКСТ ВНИЗУ -->
+    <item
+        android:gravity="bottom|center_horizontal"
+        android:bottom="80dp">
+        <bitmap
+            android:src="@drawable/splash_text"
+            android:gravity="center"
+            android:antialias="true" />
+    </item>
+</layer-list>

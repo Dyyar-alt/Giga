@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:Giga.Converters"
+             xmlns:local="clr-namespace:Giga.Views"
+             x:Class="Giga.Views.ChatPageNew"
+             Title="Чат"
+             Padding="0"
+             NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:SenderToColorConverter x:Key="SenderToColorConverter" />
+            <conv:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <conv:IsGreaterThanZeroConverter x:Key="IsGreaterThanZeroConverter" />
+            <conv:WidthToMaxWidthConverter x:Key="WidthToMaxWidthConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Верхняя панель -->
+        <Grid Grid.Row="0" BackgroundColor="#3465A4" Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0" 
+                   Text="💬 Чат" 
+                   TextColor="White" 
+                   FontSize="18" 
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+
+            <Button Grid.Column="1"
+                    Text="🔢"
+                    Command="{Binding ShowTokenStatsCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="18"
+                    Padding="10,0"
+                    Margin="0,0,5,0" />
+
+            <Button Grid.Column="2"
+                    Text="📋 История"
+                    Command="{Binding ToggleHistoryCommand}"
+                    BackgroundColor="White"
+                    TextColor="#3465A4"
+                    CornerRadius="10"
+                    Padding="15,8"
+                    Margin="0,0,10,0" />
+
+            <Button Grid.Column="3"
+                    Text="💾 Сохранить"
+                    Command="{Binding SaveSessionCommand}"
+                    BackgroundColor="White"
+                    TextColor="#3465A4"
+                    CornerRadius="10"
+                    Padding="15,8" />
+        </Grid>
+
+        <!-- Область сообщений -->
+        <Grid Grid.Row="1"
+              BackgroundColor="White"
+              HorizontalOptions="FillAndExpand"
+              VerticalOptions="FillAndExpand">
+            <ListView x:Name="MessagesListView"
+                      ItemsSource="{Binding CurrentSessionMessages}"
+                      VerticalScrollBarVisibility="Always"
+                      SeparatorVisibility="None"
+                      BackgroundColor="White"
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Padding="5,2" Margin="0,1">
+                                <Grid.Triggers>
+                                    <DataTrigger TargetType="Grid" Binding="{Binding Sender}" Value="User">
+                                        <Setter Property="HorizontalOptions" Value="End" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Grid" Binding="{Binding Sender}" Value="Bot">
+                                        <Setter Property="HorizontalOptions" Value="Start" />
+                                    </DataTrigger>
+                                </Grid.Triggers>
+
+                                <Frame Padding="12" 
+                                       CornerRadius="14"
+                                       BackgroundColor="{Binding Sender, Converter={StaticResource SenderToColorConverter}}"
+                                       HorizontalOptions="Start"
+                                       VerticalOptions="Start"
+                                       MaximumWidthRequest="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=Width, Converter={StaticResource WidthToMaxWidthConverter}}"
+                                       HasShadow="False">
+                                    <Label Text="{Binding Text}" 
+                                           TextColor="White" 
+                                           LineBreakMode="WordWrap"
+                                           FontSize="16" />
+                                </Frame>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <!-- СТАТУС -->
+        <Grid Grid.Row="2"
+              BackgroundColor="White"
+              Padding="10,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="0"
+                   Text="{Binding StatusMessage}"
+                   FontSize="Small"
+                   TextColor="Gray"
+                   VerticalTextAlignment="Center" />
+
+            <BoxView Grid.Column="0"
+                     HeightRequest="1"
+                     Color="#E0E0E0"
+                     Margin="0,0,0,0"
+                     VerticalOptions="End" />
+        </Grid>
+
+        <!-- Нижняя панель с полем ввода -->
+        <Grid Grid.Row="3" 
+              Padding="10,5" 
+              BackgroundColor="#f0f0f0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Entry Grid.Column="0"
+                   x:Name="MessageEntry"
+                   Placeholder="Введите сообщение..."
+                   Text="{Binding UserPrompt, Mode=TwoWay}"
+                   Completed="OnEntryCompleted"
+                   ReturnType="Send"
+                   HeightRequest="50"
+                   VerticalTextAlignment="Center"
+                   Margin="0,0,10,0"
+                   FontSize="16"
+                   BackgroundColor="White"
+                   TextColor="Black"
+                   PlaceholderColor="Gray" />
+
+            <Button Grid.Column="1"
+                    Text="➤"
+                    Command="{Binding SendCommand}"
+                    FontSize="24"
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    BackgroundColor="#3465A4"
+                    TextColor="White"
+                    Padding="0" />
+        </Grid>
+
+        <!-- Статус-бар -->
+        <local:StatusBar Grid.Row="4" />
+
+        <!-- Затемнение -->
+        <Grid x:Name="Overlay"
+              Grid.RowSpan="5"
+              BackgroundColor="Black"
+              Opacity="0"
+              IsVisible="False"
+              InputTransparent="True">
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid" 
+                             Binding="{Binding IsHistoryVisible}" 
+                             Value="True">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="Opacity" Value="0.3" />
+                    <Setter Property="InputTransparent" Value="False" />
+                </DataTrigger>
+            </Grid.Triggers>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleHistoryCommand}" />
+            </Grid.GestureRecognizers>
+        </Grid>
+
+        <!-- Боковая панель истории -->
+        <Grid x:Name="HistoryPanel"
+              Grid.RowSpan="5"
+              BackgroundColor="White"
+              WidthRequest="350"
+              HorizontalOptions="End"
+              VerticalOptions="Fill"
+              Opacity="0"
+              IsVisible="False"
+              InputTransparent="True">
+
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid" 
+                             Binding="{Binding IsHistoryVisible}" 
+                             Value="True">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="InputTransparent" Value="False" />
+                </DataTrigger>
+            </Grid.Triggers>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <Grid Grid.Row="0" BackgroundColor="#3465A4" Padding="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" 
+                       Text="📋 История диалогов" 
+                       TextColor="White" 
+                       FontSize="16" 
+                       FontAttributes="Bold"
+                       VerticalTextAlignment="Center" />
+                <Label Grid.Column="1"
+                       Text="✕"
+                       FontSize="22"
+                       TextColor="White"
+                       VerticalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleHistoryCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <!-- Список сессий -->
+            <ScrollView Grid.Row="1"
+                        BackgroundColor="#F5F5F5">
+                <StackLayout Padding="10" Spacing="8">
+                    <ListView x:Name="SessionsListView"
+                              ItemsSource="{Binding SavedSessions}"
+                              SelectedItem="{Binding SelectedSession, Mode=TwoWay}"
+                              SelectionMode="Single"
+                              BackgroundColor="#F5F5F5"
+                              HasUnevenRows="True"
+                              SeparatorVisibility="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Frame Padding="12"
+                                           BackgroundColor="White"
+                                           CornerRadius="10"
+                                           HasShadow="False">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                Tapped="OnSessionTapped"
+                                                NumberOfTapsRequired="2" />
+                                        </Frame.GestureRecognizers>
+                                        <VerticalStackLayout>
+                                            <Label Text="{Binding Preview}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   MaxLines="1"
+                                                   LineBreakMode="TailTruncation"
+                                                   TextColor="#333333" />
+                                            <HorizontalStackLayout Spacing="10" Margin="0,3,0,0">
+                                                <Label Text="{Binding StartTime, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                                       FontSize="11"
+                                                       TextColor="#888888" />
+                                                <Label Text="{Binding Messages.Count, StringFormat='💬 {0}'}"
+                                                       FontSize="11"
+                                                       TextColor="#888888" />
+                                                <Label Text="{Binding TotalTokens, StringFormat='🔢 {0}'}"
+                                                       FontSize="11"
+                                                       TextColor="#888888"
+                                                       IsVisible="{Binding TotalTokens, Converter={StaticResource IsGreaterThanZeroConverter}}" />
+                                            </HorizontalStackLayout>
+                                        </VerticalStackLayout>
+                                    </Frame>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Label Text="📭 История пуста"
+                           FontSize="14"
+                           TextColor="Gray"
+                           HorizontalOptions="Center"
+                           Margin="0,20,0,0" />
+                </StackLayout>
+            </ScrollView>
+
+            <!-- Кнопки управления -->
+            <Grid Grid.Row="2"
+                  BackgroundColor="#F5F5F5"
+                  Padding="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Text="🧹 Очистить всё"
+                        Command="{Binding ClearAllHistoryCommand}"
+                        BackgroundColor="#d32f2f"
+                        TextColor="White"
+                        CornerRadius="8"
+                        Padding="10"
+                        Margin="0,0,5,0"
+                        HeightRequest="44" />
+
+                <Button Grid.Column="1"
+                        Text="🔄 Обновить"
+                        Command="{Binding RefreshHistoryCommand}"
+                        BackgroundColor="#3465A4"
+                        TextColor="White"
+                        CornerRadius="8"
+                        Padding="10"
+                        Margin="5,0,0,0"
+                        HeightRequest="44" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

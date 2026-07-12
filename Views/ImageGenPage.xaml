@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:Giga.Converters"
+             xmlns:local="clr-namespace:Giga.Views"
+             x:Class="Giga.Views.ImageGenPage"
+             Title="Генератор изображений"
+             Padding="0">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:BytesToImageConverter x:Key="BytesToImageConverter" />
+            <conv:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <conv:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Основной контент -->
+        <ScrollView Grid.Row="0" Padding="10">
+            <VerticalStackLayout Spacing="15">
+
+                <!-- Верхняя панель с кнопками -->
+                <Grid ColumnDefinitions="*, Auto, Auto, Auto" ColumnSpacing="10">
+                    <Label Grid.Column="0"
+                           Text="🎨 Генератор" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="#3465A4"
+                           VerticalTextAlignment="Center" />
+
+                    <Button Grid.Column="1"
+                            Text="💾"
+                            Command="{Binding SaveCurrentImageCommand}"
+                            BackgroundColor="#3465A4"
+                            TextColor="White"
+                            CornerRadius="8"
+                            Padding="12,8"
+                            FontSize="16"
+                            HeightRequest="40" />
+
+                    <Button Grid.Column="2"
+                            Text="🔢"
+                            Command="{Binding ShowTokenStatsCommand}"
+                            BackgroundColor="#3465A4"
+                            TextColor="White"
+                            CornerRadius="8"
+                            Padding="12,8"
+                            FontSize="16"
+                            HeightRequest="40" />
+
+                    <Button Grid.Column="3"
+                            Text="📋"
+                            Command="{Binding ToggleHistoryCommand}"
+                            BackgroundColor="#3465A4"
+                            TextColor="White"
+                            CornerRadius="8"
+                            Padding="12,8"
+                            FontSize="16"
+                            HeightRequest="40" />
+                </Grid>
+
+                <!-- Ввод промпта -->
+                <Entry Placeholder="Введите описание..."
+                       Text="{Binding Prompt, Mode=TwoWay}" />
+
+                <!-- Настройки -->
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                    <Picker Title="Стиль"
+                            ItemsSource="{Binding StylesList}"
+                            SelectedItem="{Binding SelectedStyle}" />
+                    <Picker Title="Разрешение"
+                            Grid.Column="1"
+                            ItemsSource="{Binding ResolutionsList}"
+                            SelectedItem="{Binding SelectedResolution}" />
+                </Grid>
+
+                <!-- Кнопка генерации -->
+                <Button Text="Сгенерировать"
+                        Command="{Binding GenerateCommand}"
+                        IsEnabled="{Binding IsNotGenerating}"
+                        BackgroundColor="#3465A4"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="50" />
+
+                <!-- Статусное сообщение -->
+                <Label Text="{Binding StatusMessage}" 
+                       FontSize="Small" 
+                       HorizontalOptions="Center" />
+
+                <!-- ActivityIndicator -->
+                <ActivityIndicator IsVisible="{Binding IsGenerating}" 
+                                   IsRunning="{Binding IsGenerating}" 
+                                   HorizontalOptions="Center" />
+
+                <!-- Превью изображения -->
+                <Frame HeightRequest="350"
+                       BackgroundColor="#F0F0F0"
+                       HasShadow="False"
+                       CornerRadius="10"
+                       IsVisible="{Binding HasImage}">
+                    <Image Source="{Binding SelectedHistoryItem.ImageBytes, Converter={StaticResource BytesToImageConverter}}"
+                           Aspect="AspectFit"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Frame>
+
+                <!-- Кнопки сохранения -->
+                <Grid ColumnDefinitions="*, *, *" 
+                      ColumnSpacing="10"
+                      IsVisible="{Binding HasImage}">
+                    <Button Grid.Column="0"
+                            Text="PNG"
+                            Command="{Binding SaveImageCommand}"
+                            CommandParameter="{Binding SelectedHistoryItem}"
+                            BackgroundColor="#4CAF50"
+                            TextColor="White"
+                            CornerRadius="8"
+                            HeightRequest="44" />
+
+                    <Button Grid.Column="1"
+                            Text="JPG"
+                            Command="{Binding SaveImageWithPickerCommand}"
+                            CommandParameter="{Binding SelectedHistoryItem}"
+                            BackgroundColor="#FF9800"
+                            TextColor="White"
+                            CornerRadius="8"
+                            HeightRequest="44" />
+
+                    <Button Grid.Column="2"
+                            Text="GIF"
+                            Command="{Binding SaveImageWithPickerCommand}"
+                            CommandParameter="{Binding SelectedHistoryItem}"
+                            BackgroundColor="#9C27B0"
+                            TextColor="White"
+                            CornerRadius="8"
+                            HeightRequest="44" />
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Статус-бар -->
+        <local:StatusBar Grid.Row="1" />
+
+        <!-- Затемнение -->
+        <Grid x:Name="Overlay"
+              Grid.RowSpan="2"
+              BackgroundColor="Black"
+              Opacity="0"
+              IsVisible="False"
+              InputTransparent="True">
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid" 
+                             Binding="{Binding IsHistoryVisible}" 
+                             Value="True">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="Opacity" Value="0.3" />
+                    <Setter Property="InputTransparent" Value="False" />
+                </DataTrigger>
+            </Grid.Triggers>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleHistoryCommand}" />
+            </Grid.GestureRecognizers>
+        </Grid>
+
+        <!-- Боковая панель истории -->
+        <Grid x:Name="HistoryPanel"
+              Grid.RowSpan="2"
+              BackgroundColor="White"
+              WidthRequest="350"
+              HorizontalOptions="End"
+              VerticalOptions="Fill"
+              Opacity="0"
+              IsVisible="False"
+              InputTransparent="True">
+
+            <Grid.Triggers>
+                <DataTrigger TargetType="Grid" 
+                             Binding="{Binding IsHistoryVisible}" 
+                             Value="True">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="InputTransparent" Value="False" />
+                </DataTrigger>
+            </Grid.Triggers>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок -->
+            <Grid Grid.Row="0" BackgroundColor="#3465A4" Padding="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" 
+                       Text="📋 История генераций" 
+                       TextColor="White" 
+                       FontSize="16" 
+                       FontAttributes="Bold"
+                       VerticalTextAlignment="Center" />
+                <Label Grid.Column="1"
+                       Text="✕"
+                       FontSize="22"
+                       TextColor="White"
+                       VerticalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleHistoryCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <!-- Список истории -->
+            <ScrollView Grid.Row="1"
+                        BackgroundColor="#F5F5F5">
+                <StackLayout Padding="10" Spacing="8">
+                    <ListView x:Name="HistoryListView"
+                              ItemsSource="{Binding GenerationHistory}"
+                              SelectedItem="{Binding SelectedHistoryItem, Mode=TwoWay}"
+                              SelectionMode="Single"
+                              BackgroundColor="#F5F5F5"
+                              HasUnevenRows="True"
+                              SeparatorVisibility="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Frame Padding="10"
+                                           BackgroundColor="White"
+                                           CornerRadius="10"
+                                           HasShadow="False">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                Tapped="OnHistoryItemTapped"
+                                                NumberOfTapsRequired="2" />
+                                        </Frame.GestureRecognizers>
+
+                                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
+                                            <!-- Превью -->
+                                            <Frame Grid.Column="0"
+                                                   WidthRequest="50"
+                                                   HeightRequest="50"
+                                                   Padding="0"
+                                                   BackgroundColor="#EEEEEE"
+                                                   CornerRadius="6">
+                                                <Image Source="{Binding ImageBytes, Converter={StaticResource BytesToImageConverter}}"
+                                                       Aspect="AspectFill"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center" />
+                                            </Frame>
+
+                                            <!-- Информация -->
+                                            <VerticalStackLayout Grid.Column="1">
+                                                <Label Text="{Binding Prompt}"
+                                                       FontSize="13"
+                                                       FontAttributes="Bold"
+                                                       MaxLines="2"
+                                                       LineBreakMode="TailTruncation"
+                                                       TextColor="#333333" />
+                                                <HorizontalStackLayout Spacing="10">
+                                                    <Label Text="{Binding Timestamp, StringFormat='{0:dd.MM.yyyy HH:mm}'}"
+                                                           FontSize="10"
+                                                           TextColor="#888888" />
+                                                    <Label Text="{Binding Style}"
+                                                           FontSize="10"
+                                                           TextColor="#888888" />
+                                                    <Label Text="{Binding Resolution}"
+                                                           FontSize="10"
+                                                           TextColor="#888888" />
+                                                </HorizontalStackLayout>
+
+                                                <HorizontalStackLayout Spacing="10">
+                                                    <Label Text="💾 Сохранено в историю"
+                                                           FontSize="10"
+                                                           TextColor="#4CAF50"
+                                                           IsVisible="{Binding IsSaved}" />
+                                                    <Label Text="🖼️ Есть изображение"
+                                                           FontSize="10"
+                                                           TextColor="#4CAF50"
+                                                           IsVisible="{Binding HasImage}" />
+                                                    <Label Text="❌ Изображение не сохранилось"
+                                                           FontSize="10"
+                                                           TextColor="#d32f2f"
+                                                           IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}" />
+                                                </HorizontalStackLayout>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </Frame>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <Label Text="📭 История пуста"
+                           FontSize="14"
+                           TextColor="Gray"
+                           HorizontalOptions="Center"
+                           Margin="0,20,0,0"
+                           IsVisible="{Binding GenerationHistory.Count, Converter={StaticResource InverseBoolConverter}}" />
+                </StackLayout>
+            </ScrollView>
+
+            <!-- Кнопки управления -->
+            <Grid Grid.Row="2"
+                  BackgroundColor="#F5F5F5"
+                  Padding="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
+                        Text="🧹 Очистить всё"
+                        Command="{Binding ClearAllHistoryCommand}"
+                        BackgroundColor="#d32f2f"
+                        TextColor="White"
+                        CornerRadius="8"
+                        Padding="10"
+                        Margin="0,0,5,0"
+                        HeightRequest="44" />
+
+                <Button Grid.Column="1"
+                        Text="🔄 Обновить"
+                        Command="{Binding RefreshHistoryCommand}"
+                        BackgroundColor="#3465A4"
+                        TextColor="White"
+                        CornerRadius="8"
+                        Padding="10"
+                        Margin="5,0,0,0"
+                        HeightRequest="44" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>

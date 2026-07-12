@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Giga.Views.WelcomePage"
+             Title="Добро пожаловать!"
+             BackgroundColor="White"
+             Padding="0">
+
+    <ScrollView Padding="20" 
+                BackgroundColor="White"
+                VerticalScrollBarVisibility="Always">
+        <VerticalStackLayout Spacing="20" 
+                             VerticalOptions="Center"
+                             Padding="10">
+
+            <!-- Заголовок -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Label Text="Добро пожаловать в GigaChat Client!"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="#3465A4"
+                       HorizontalOptions="Center" />
+                <Label Text="Для работы с приложением нужен ключ"
+                       FontSize="15"
+                       TextColor="#666666"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <BoxView HeightRequest="2" Color="#E0E0E0" />
+
+            <!-- Инструкция -->
+            <VerticalStackLayout Spacing="12">
+                <Label Text="📋 Инструкция по получению ключа"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="#333333" />
+
+                <Label Text="Если Вы не зарегистрированы в Сбер разработке:"
+                       FontSize="15"
+                       TextColor="#555555" />
+
+                <!-- Ссылка -->
+                <Frame Padding="15"
+                       BackgroundColor="#F0F8FF"
+                       CornerRadius="10"
+                       HasShadow="False">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="🔗 Перейдите по ссылке:"
+                               FontSize="15"
+                               TextColor="#333333" />
+                        <Label Text="https://developers.sber.ru/"
+                               FontSize="15"
+                               TextColor="#3465A4"
+                               TextDecorations="Underline">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnLinkTapped" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Шаги с правильной нумерацией -->
+                <VerticalStackLayout Spacing="10" Margin="0,5,0,0">
+                    <Label Text="📌 Затем:"
+                           FontSize="15"
+                           FontAttributes="Bold"
+                           TextColor="#333333"
+                           Margin="0,0,0,5" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="1️ "
+                               FontSize="16"
+                               VerticalTextAlignment="Center"
+                               WidthRequest="30" />
+                        <Label Text="Зарегистрируйтесь в системе"
+                               FontSize="15"
+                               TextColor="#555555"
+                               VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="2️ "
+                               FontSize="16"
+                               VerticalTextAlignment="Center"
+                               WidthRequest="30" />
+                        <Label Text="Создайте новый проект для API"
+                               FontSize="15"
+                               TextColor="#555555"
+                               VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="3️ "
+                               FontSize="16"
+                               VerticalTextAlignment="Center"
+                               WidthRequest="30" />
+                        <Label Text="Получите ключ доступа"
+                               FontSize="15"
+                               TextColor="#555555"
+                               VerticalTextAlignment="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Важное предупреждение (розовато-красный фон) -->
+                <Frame Padding="15"
+                       BackgroundColor="#FFE0E0"
+                       CornerRadius="10"
+                       HasShadow="False">
+                    <VerticalStackLayout Spacing="5">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="⚠️"
+                                   FontSize="18"
+                                   VerticalTextAlignment="Center" />
+                            <Label Text="ВАЖНО!"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   TextColor="#CC0000"
+                                   VerticalTextAlignment="Center" />
+                        </HorizontalStackLayout>
+                        <Label Text="Обязательно сохраните ключ. Он выдаётся один раз и нужен для бесплатного использования приложения. Ключ вводится один раз - мы безопасно сохраним его внутри."
+                               FontSize="14"
+                               TextColor="#990000" />
+                    </VerticalStackLayout>
+                </Frame>
+            </VerticalStackLayout>
+
+            <BoxView HeightRequest="2" Color="#E0E0E0" />
+
+            <!-- Кнопка перехода -->
+            <Button Text="Понятно, перейти к входу ➜"
+                    Command="{Binding ContinueCommand}"
+                    BackgroundColor="#3465A4"
+                    TextColor="White"
+                    CornerRadius="10"
+                    HeightRequest="55"
+                    FontSize="16"
+                    FontAttributes="Bold" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
