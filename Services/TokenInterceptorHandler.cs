@@ -40,8 +40,7 @@ namespace Giga.Services
                 }
             }
 
-            // Продолжаем выполнение запроса
-            return await base.SendAsync(request, cancellationToken);
+                       return await base.SendAsync(request, cancellationToken);
         }
     }
 }
