@@ -123,8 +123,6 @@ xml
   <AndroidSigningStorePass>your_password</AndroidSigningStorePass>
 </PropertyGroup>
 
-⚠️ Никогда не загружайте .keystore и .pfx в публичный репозиторий! Добавьте их в .gitignore.
-
 📁 Giga/
 ├── 📁 Converters/          # Конвертеры значений для UI
 ├── 📁 Helpers/             # Вспомогательные утилиты
