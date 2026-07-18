@@ -123,7 +123,7 @@ namespace Giga.Services
         {
             try
             {
-                // Используем алиас AndroidApplication
+                
                 var context = AndroidApplication.Context;
                 var resolver = context.ContentResolver;
 
@@ -135,7 +135,7 @@ namespace Giga.Services
 
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
                 {
-                    // Используем алиас AndroidEnvironment
+                   
                     contentValues.Put(MediaStore.IMediaColumns.RelativePath, $"{AndroidEnvironment.DirectoryPictures}/{FolderName}");
                 }
 
@@ -171,7 +171,7 @@ namespace Giga.Services
         {
             try
             {
-                // Используем алиас AndroidEnvironment
+                
                 var picturesPath = AndroidEnvironment.GetExternalStoragePublicDirectory(
                     AndroidEnvironment.DirectoryPictures)?.AbsolutePath;
 
@@ -209,7 +209,7 @@ namespace Giga.Services
         {
             try
             {
-                // Используем алиас AndroidApplication
+                
                 var context = AndroidApplication.Context;
                 var intent = new Intent(Intent.ActionMediaScannerScanFile);
                 var uri = Android.Net.Uri.FromFile(new Java.IO.File(filePath));
