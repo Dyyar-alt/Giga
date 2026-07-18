@@ -19,7 +19,7 @@ namespace Giga.Services
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            //Перехватываем запрос и сохраняем токен из заголовка
+            
             if (request.Headers.Contains("Authorization"))
             {
                 var authHeader = request.Headers.GetValues("Authorization").FirstOrDefault();
