@@ -49,7 +49,7 @@ namespace Giga.Behaviors
             {
                 while (!_cts.Token.IsCancellationRequested && _image.IsVisible)
                 {
-                    // Принудительно обновляем Image для анимации GIF
+                    
                     var source = _image.Source;
                     _image.Source = null;
                     await Task.Delay(1, _cts.Token);
@@ -59,7 +59,6 @@ namespace Giga.Behaviors
             }
             catch (TaskCanceledException)
             {
-                // Ожидаемое исключение при отмене
             }
             finally
             {
