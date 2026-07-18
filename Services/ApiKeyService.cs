@@ -33,7 +33,6 @@ public class ApiKeyService : IApiKeyService
             if (string.IsNullOrWhiteSpace(apiKey))
             {
                 System.Diagnostics.Debug.WriteLine("Попытка сохранить пустой ключ");
-                // Удаляем ключ, если передана пустая строка
                 Preferences.Remove(KeyStorageKey);
                 System.Diagnostics.Debug.WriteLine("Ключ удален из хранилища");
                 return Task.CompletedTask;
