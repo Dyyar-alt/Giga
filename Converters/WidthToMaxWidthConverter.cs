@@ -8,7 +8,7 @@ namespace Giga.Converters
         {
             if (value is double width && width > 0)
             {
-                // 85% от ширины страницы для заполнения
+                // Устанавливаем ширину ответа бота в 85% от ширины страницы для заполнения
                 var maxWidth = width * 0.85;
 
                 // Ограничиваем:
