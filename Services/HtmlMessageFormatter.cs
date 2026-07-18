@@ -4,14 +4,13 @@ using System.Text;
 namespace Giga.Services
 {
 
-    // Сервис для форматирования диалога в HTML-код.
-    // Хранит текущее состояние чата в виде строки HTML.
+    
 
     public class HtmlMessageFormatter
     {
         private readonly StringBuilder _htmlContent;
 
-        // Базовый CSS-стиль для всего чата
+        // ГЃГ Г§Г®ГўГ»Г© CSS-Г±ГІГЁГ«Гј Г¤Г«Гї ГўГ±ГҐГЈГ® Г·Г ГІГ 
         private const string BaseStyle = @"
             <style>
                 body { font-family: 'Segoe UI', Ubuntu, Arial, sans-serif; font-size: 14pt; line-height: 1.6; padding: 10px; margin: 0; background-color: #f8f9fa; }
@@ -29,14 +28,12 @@ namespace Giga.Services
         }
 
 
-        // Возвращаем текущий HTML-код всего диалога.
-        // Используется для привязки к свойству Source WebView.
+        
 
         public string GetHtml() => _htmlContent.ToString() + "</body></html>";
 
 
-        // Добавляем сообщение пользователя в диалог.
-
+        
         public void AppendUserMessage(string message)
         {
             var cleanMessage = PrepareText(message);
@@ -48,8 +45,7 @@ namespace Giga.Services
         }
 
 
-        // Добавляем ответ бота в диалог.
-
+        
         public void AppendBotResponse(string response)
         {
             var cleanResponse = PrepareText(response);
@@ -61,8 +57,7 @@ namespace Giga.Services
         }
 
 
-        // Очищаем весь диалог.
-
+      
         public void Clear()
         {
             _htmlContent.Clear();
@@ -70,19 +65,14 @@ namespace Giga.Services
         }
 
 
-        // Подготавливаем текст для безопасной вставки в HTML:
-        // - Удаляем существующие HTML-теги
-        // - Экранируем спецсимволы (&, <, >, ")
-        // - Заменяем переносы строк на <br/>
-
-        private static string PrepareText(string text)
+       private static string PrepareText(string text)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
-            // Используем TextHelper для удаления тегов
+           
             var noTags = TextHelper.StripHtml(text);
-            // Экранируем спецсимволы
+           
             var escaped = System.Net.WebUtility.HtmlEncode(noTags);
-            // Заменяем \n на <br/> для сохранения переносов строк
+            
             return escaped.Replace("\n", "<br/>");
         }
     }
