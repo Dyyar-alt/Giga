@@ -10,7 +10,7 @@ namespace Giga.Services
     {
         private readonly StringBuilder _htmlContent;
 
-        // Áàçîâûé CSS-ñòèëü äëÿ âñåãî ÷àòà
+        
         private const string BaseStyle = @"
             <style>
                 body { font-family: 'Segoe UI', Ubuntu, Arial, sans-serif; font-size: 14pt; line-height: 1.6; padding: 10px; margin: 0; background-color: #f8f9fa; }
