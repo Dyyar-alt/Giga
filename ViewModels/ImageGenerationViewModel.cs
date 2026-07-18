@@ -61,6 +61,7 @@ namespace Giga.ViewModels
             _imageSaveService = imageSaveService;
             _statsService = statsService;
 
+            //Параметры генерации берем из API
             StylesList.Add("Реалистичный");
             StylesList.Add("Аниме");
             StylesList.Add("Киберпанк");
