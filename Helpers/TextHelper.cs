@@ -1,3 +1,4 @@
+//Очистка текта ответов бота от лишних символов
 using System.Text;
 
 namespace Giga.Helpers
